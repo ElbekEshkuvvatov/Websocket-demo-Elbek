@@ -1,7 +1,8 @@
 package com.example.websocketdemoelbekjon.controller;
 
 
-import com.example.websocketdemoelbekjon.model.ChatMessage;
+import com.example.websocketdemoelbekjon.entity.ChatMessage;
+import com.example.websocketdemoelbekjon.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,11 @@ public class WebSocketEventListener {
 
 
     @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
+
+    public WebSocketEventListener(SimpMessageSendingOperations messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     @EventListener
     public  void handleWebSocketConnectListener(SessionConnectEvent event){
@@ -31,14 +36,13 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
 
-        String username = (String) headerAccessor.getSessionAttributes().get("username");
+        User username = (User)headerAccessor.getSessionAttributes().get("username");
 
     if (username != null){
         logger.info("User Disconnected: " + username);
 
         ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setType(ChatMessage.MessageType.LEAVE);
-        chatMessage.setSender(username);
+        chatMessage.setFrom(username);
 
         messagingTemplate.convertAndSend("/topic/public", chatMessage);
     }

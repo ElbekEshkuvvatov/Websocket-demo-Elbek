@@ -9,16 +9,19 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration    // class ni bean qilib object olish uchun ishlatiladi.
 @EnableWebSocketMessageBroker
-public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
+public class  WebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-            registry.addEndpoint("/ws").withSockJS();
+            registry.addEndpoint("/ws").withSockJS();   //web socketga ulanish uchun  kerak buladi
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-         registry.enableSimpleBroker("/topic");
-         registry.setApplicationDestinationPrefixes("/app");
+         registry.enableSimpleBroker("/topic");   // Kanalni ochib quyish va o'sha kanalga a'zo bo'lgan hamma kelgan message ni eshitadi
+         registry.setApplicationDestinationPrefixes("/app");     // Clientdan turib serverga nimadir berishda kerak buladigan URl  ning prefix ti
     }
 }
+
+
+// Springda web socket bilan bog'liq hammaga configuratsiyta shu

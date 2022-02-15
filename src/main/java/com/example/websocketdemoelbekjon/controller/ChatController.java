@@ -1,6 +1,6 @@
 package com.example.websocketdemoelbekjon.controller;
 
-import com.example.websocketdemoelbekjon.model.ChatMessage;
+import com.example.websocketdemoelbekjon.entity.ChatMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,7 +14,7 @@ public class ChatController {
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
-    public  ChatMessage senMessage(@Payload ChatMessage chatMessage) {
+    public  ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
         return  chatMessage;
     }
 
@@ -23,7 +23,7 @@ public class ChatController {
     public ChatMessage addUser(@Payload ChatMessage chatMessage,
                                SimpMessageHeaderAccessor headerAccessor){
         // Add username in web Socket session
-        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+        headerAccessor.getSessionAttributes().put("username", chatMessage.getTo());
         return  chatMessage;
     }
 
